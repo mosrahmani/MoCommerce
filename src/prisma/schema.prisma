@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:1234@localhost:5432/MoCommerce"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+// Product
+model Product {
+  id          Int               @id @default(autoincrement())
+  title       String            @unique
+  slug        String            @unique
+  quantity    Int
+  price       Decimal
+  status      productStatus     @default(Available)
+  description String
+  properties  Json?
+  categories  ProductCategory[]
+  photos      ProductPhoto[]
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
+}
+
+enum productStatus {
+  Soon
+  Available
+  Unavailable
+}
+
+model ProductCategory {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  products   Product[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  @@unique([name])
+}
+
+model ProductPhoto {
+  id         Int      @id @default(autoincrement())
+  url        String
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
