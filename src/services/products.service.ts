@@ -8,8 +8,12 @@ import slugify from 'slugify';
 class ProductService {
   public products = new PrismaClient().product;
 
-  public async findAllProduct(): Promise<Product[]> {
-    const allProduct: Product[] = await this.products.findMany({ include: { photos: { select: { url: true } } } });
+  public async findAllProduct(orderBy: Object[]): Promise<Product[]> {
+
+    const allProduct: Product[] = await this.products.findMany({
+      include: { photos: { select: { url: true } } },
+      orderBy,
+    });
     return allProduct;
   }
 

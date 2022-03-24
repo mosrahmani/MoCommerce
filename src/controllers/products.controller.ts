@@ -8,7 +8,10 @@ class ProductsController {
 
   public getProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const findAllProductsData: Product[] = await this.productService.findAllProduct();
+      const {sortBy} = req.query;
+      const sortingParam = this.sortingProducts(sortBy);
+
+      const findAllProductsData: Product[] = await this.productService.findAllProduct(sortingParam);
 
       res.status(200).json(findAllProductsData);
     } catch (error) {
@@ -59,6 +62,19 @@ class ProductsController {
     } catch (error) {
       next(error);
     }
+  };
+
+  public sortingProducts = (value: any): Object[] => {
+    const sortingParam: Object[] = []
+
+    switch (value) {
+      case 'cheapest':
+        sortingParam.push({ 'price': 'asc'})
+      case 'latest':
+        sortingParam.push({ 'created_at': 'desc'})
+    }
+
+    return sortingParam
   };
 }
 

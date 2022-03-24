@@ -10,6 +10,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model BaseModel {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
 model User {
   id       Int    @id @default(autoincrement())
   email    String @unique
@@ -25,8 +31,9 @@ model Product {
   price       Decimal
   status      productStatus     @default(Available)
   description String
+  views       Int?
   properties  Json?
-  categories  ProductCategory[]
+  categories  Category[] @relation(references: [id])
   photos      ProductPhoto[]
   created_at  DateTime          @default(now())
   updated_at  DateTime          @updatedAt
@@ -38,7 +45,7 @@ enum productStatus {
   Unavailable
 }
 
-model ProductCategory {
+model Category {
   id         Int       @id @default(autoincrement())
   name       String    @db.VarChar(100)
   products   Product[]
