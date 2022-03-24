@@ -1,3 +1,5 @@
+import { HttpException } from '@exceptions/HttpException';
+
 /**
  * @method isEmpty
  * @param {String | Number | Object} value
@@ -17,3 +19,6 @@ export const isEmpty = (value: string | number | object): boolean => {
     return false;
   }
 };
+export const checkDataExists = (data: object | number | string): void => {
+  if (isEmpty(data)) throw new HttpException(400, "The required data has not been entered.");
+}
